@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html class="no-js" lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +7,89 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-    text-align: center;
-    background-color: #f9f9f9;
+    margin: 0;
+    padding: 40px 20px;
+    color: #0f1724;
+    /* layered background: soft linear + radial accents */
+    background-color: #f6fbff;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(255,223,186,0.12), transparent 8%),
+      radial-gradient(circle at 90% 80%, rgba(186,227,255,0.14), transparent 12%),
+      linear-gradient(135deg,#f6fbff 0%, #eef7ff 45%, #fff7f3 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+
+  /* content card to lift information from the background */
+  .card {
+    width: 100%;
+    max-width: 640px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 14px;
+    padding: 28px 26px;
+    box-shadow: 0 12px 30px rgba(16,30,60,0.12);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    text-align: center;
+  }
+  /* decorative top area outside the card */
+  .page-top {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 18px;
+    position: relative;
+    pointer-events: auto; /* allow interactions for legend/links */
+    overflow: visible;
+  }
+  .page-top .decor {
+    background: linear-gradient(90deg, rgba(11,99,184,0.25), rgba(26,156,255,0.18));
+    border-radius: 12px;
+    padding: 18px 20px 6px 20px;
+    position: relative;
+    overflow: visible;
+  }
+  .page-top .watermark {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    top: 6px;
+    font-size: 34px;
+    font-weight:800;
+    color: rgba(11,99,184,0.14);
+    letter-spacing: 1px;
+  }
+  .page-top .shapes{ position:absolute; left:18px; top:8px; display:flex; gap:10px }
+  .page-top .shape { width:34px; height:34px; border-radius:10px; opacity:0.95 }
+  .shape.blue{ background: #0b63b8 }
+  .shape.aqua{ background: #1a9cff }
+  .shape.peach{ background: #ffb79a }
+  /* small wave separator that sits between top decor and card */
+  .wave-sep{ display:block; width:100%; height:48px; margin-top:8px }
+
+  /* subtle floating animation for the shapes */
+  @keyframes floaty { 0%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } 100%{ transform: translateY(0) } }
+  .page-top .shape { animation: floaty 4.5s ease-in-out infinite; }
+
+  /* watermark pulse */
+  @keyframes softPulse { 0%{ transform: translateX(-50%) rotate(-4deg) scale(1) } 50%{ transform: translateX(-50%) rotate(-4deg) scale(1.02) } 100%{ transform: translateX(-50%) rotate(-4deg) scale(1) } }
+  .page-top .watermark { animation: softPulse 6s ease-in-out infinite; }
+
+  /* top legend (slogan + chips) */
+  .top-legend{ position: relative; padding: 10px 6px 8px; pointer-events: auto; text-align:center }
+  .top-legend .slogan{ margin:6px 0 8px; font-weight:600; color: #064f8f }
+  .top-legend .services{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap }
+  .service-chip{ display:inline-block; background: rgba(255,255,255,0.9); color:#064f8f; padding:6px 10px; border-radius:999px; font-weight:600; text-decoration:none; box-shadow: 0 4px 10px rgba(9,40,80,0.06); transition: transform 180ms ease, box-shadow 180ms; }
+  .service-chip:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(9,40,80,0.12) }
+  .top-legend .contact-small{ margin-top:8px; font-size:0.85rem; color: rgba(4,30,68,0.8) }
+  .pillars{ display:flex; gap:12px; justify-content:center; margin-top:10px; flex-wrap:wrap }
+  .pillar{ background: rgba(255,255,255,0.95); padding:8px 12px; border-radius:10px; display:flex; gap:8px; align-items:center; box-shadow: 0 6px 18px rgba(8,30,60,0.06) }
+  .pillar svg{ width:22px; height:22px; flex:0 0 22px }
+  .cta-visit{ display:inline-block; margin-left:8px; background:#064f8f; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:700 }
+  .socials{ display:inline-flex; gap:8px; align-items:center; margin-left:8px }
+  .socials a{ color: rgba(255,255,255,0.95); text-decoration:none; font-size:18px }
+
   header {
     display: flex;
     flex-direction: column;
@@ -37,13 +114,19 @@
     margin-top: 20px;
   }
   .contact a {
-    display: block;
-    margin: 5px 0;
+    display: block; /* ensure each contact is on its own line */
+    margin: 6px auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    transition: transform 180ms ease, color 180ms;
+    text-align: center;
+    white-space: normal; /* allow wrapping */
+    overflow-wrap: anywhere;
     text-decoration: none;
-    color: #0077cc;
-    font-weight: bold;
   }
   .contact a:hover {
+    transform: translateX(6px);
+    color: #005fa3;
     text-decoration: underline;
   }
   /* Animations and interactive styles */
@@ -64,15 +147,7 @@
     transform: translateY(-6px) rotate(-2deg) scale(1.03);
     box-shadow: 0 10px 20px rgba(0,0,0,0.12);
   }
-  /* Link subtle pop on hover */
-  .contact a {
-    display: inline-block; /* needed for transform */
-    transition: transform 180ms ease, color 180ms;
-  }
-  .contact a:hover {
-    transform: translateX(6px);
-    color: #005fa3;
-  }
+  /* Link subtle pop on hover (handled above) */
   /* Header entrance stagger */
   header > * {
     opacity: 0;
@@ -85,30 +160,43 @@
   header.visible > *:nth-child(1) { transition: all 420ms ease 120ms; }
   header.visible > *:nth-child(2) { transition: all 420ms ease 200ms; }
   header.visible > *:nth-child(3) { transition: all 420ms ease 280ms; }
+
+  /* If JS is disabled, show content (no-js fallback) */
+  html.no-js .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+  html.no-js header > * { opacity: 1 !important; transform: none !important; }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    .page-top .shape, .page-top .watermark { animation: none !important }
+  }
 </style>
 </head>
 <body>
 
-<header>
+<div class="card">
+
+<header class="fade-in">
   <img src="logo_mylene_agossou.png" alt="Logo" class="logo">
   <h1>Mylène AGOSSOU</h1>
   <h3>Directrice Générale Adjoint</h3>
 </header>
 
-<div class="contact">
-  <a href="mailto:amylene@ejroseywell.com">✉️ amylene@ejroseywell.com</a>
-  <a href="tel:+22955806565">📞 +229 55 80 65 65</a>
-  <a href="tel:+22998168806">📞 +229 98 16 88 06</a>
-  <a href="https://www.ejroseywell.com" target="_blank">🔗 Website</a>
+<div class="contact fade-in">
+  <a class="fade-in" href="mailto:amylene@ejroseywell.com">✉️ amylene@ejroseywell.com</a>
+  <a class="fade-in" href="tel:+22955806565">📞 +229 55 80 65 65</a>
+  <a class="fade-in" href="tel:+22998168806">📞 +229 98 16 88 06</a>
+  <a class="fade-in" href="https://www.ejroseywell.com" target="_blank">🔗 Website</a>
 </div>
+
 <script>
   // On DOM ready, reveal header with staggered animation
   document.addEventListener('DOMContentLoaded', function () {
+    // remove no-js class as soon as possible so CSS fallback is disabled
+    document.documentElement.classList.remove('no-js');
+
     const header = document.querySelector('header');
     if (header) header.classList.add('visible');
-
-    // Mark contact links and header as fade-in targets
-    document.querySelectorAll('.contact, .contact a').forEach(el => el.classList.add('fade-in'));
   });
 
   // Reveal elements on scroll using IntersectionObserver
