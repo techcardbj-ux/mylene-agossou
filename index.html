@@ -46,6 +46,45 @@
   .contact a:hover {
     text-decoration: underline;
   }
+  /* Animations and interactive styles */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  img.logo {
+    transition: transform 300ms ease, box-shadow 300ms ease;
+    will-change: transform;
+  }
+  img.logo:hover {
+    transform: translateY(-6px) rotate(-2deg) scale(1.03);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  }
+  /* Link subtle pop on hover */
+  .contact a {
+    display: inline-block; /* needed for transform */
+    transition: transform 180ms ease, color 180ms;
+  }
+  .contact a:hover {
+    transform: translateX(6px);
+    color: #005fa3;
+  }
+  /* Header entrance stagger */
+  header > * {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  header.visible > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  header.visible > *:nth-child(1) { transition: all 420ms ease 120ms; }
+  header.visible > *:nth-child(2) { transition: all 420ms ease 200ms; }
+  header.visible > *:nth-child(3) { transition: all 420ms ease 280ms; }
 </style>
 </head>
 <body>
@@ -62,6 +101,29 @@
   <a href="tel:+22998168806">📞 +229 98 16 88 06</a>
   <a href="https://www.ejroseywell.com" target="_blank">🔗 Website</a>
 </div>
+<script>
+  // On DOM ready, reveal header with staggered animation
+  document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('header');
+    if (header) header.classList.add('visible');
 
+    // Mark contact links and header as fade-in targets
+    document.querySelectorAll('.contact, .contact a').forEach(el => el.classList.add('fade-in'));
+  });
+
+  // Reveal elements on scroll using IntersectionObserver
+  (function () {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  })();
+</script>
 </body>
 </html>
